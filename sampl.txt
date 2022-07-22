@@ -1,0 +1,62 @@
+remove docker and install 
+
+-------------------------
+
+Uninstall old versions
+Older versions of Docker were called docker or docker-engine. If these are installed, uninstall them, along with associated dependencies.
+
+ sudo yum remove docker \
+                  docker-client \
+                  docker-client-latest \
+                  docker-common \
+                  docker-latest \
+                  docker-latest-logrotate \
+                  docker-logrotate \
+                  docker-engine
+It’s OK if yum reports that none of these packages are installed.
+
+The contents of /var/lib/docker/, including images, containers, volumes, and networks
+
+Install using the repository
+Before you install Docker Engine for the first time on a new host machine, you need to set up the Docker repository. Afterward, you can install and update Docker from the repository.
+
+Set up the repository
+Install the yum-utils package (which provides the yum-config-manager utility) and set up the repository.
+
+ sudo yum install -y yum-utils
+ sudo yum-config-manager \
+    --add-repo \
+    https://download.docker.com/linux/centos/docker-ce.repo
+Install Docker Engine
+Install the latest version of Docker Engine, containerd, and Docker Compose or go to the next step to install a specific version:
+
+ sudo yum install docker-ce docker-ce-cli containerd.io docker-compose-plugin
+
+
+ ----------------------------------------------------------
+
+ kubeadm init
+...
+[preflight] Running pre-flight checks
+error execution phase preflight: [preflight] Some fatal errors occurred:
+	[ERROR CRI]: container runtime is not running: output: time="2020-09-24T11:49:16Z" level=fatal msg="getting status of runtime failed: rpc error: code = Unimplemented desc = unknown service runtime.v1alpha2.RuntimeService"
+, error: exit status 1
+
+Solution:
+
+rm /etc/containerd/config.toml
+systemctl restart containerd
+kubeadm init
+
+--------------------------------------------------------------
+
+created by dnf config-manager from file:///root/                                                0.0  B/s |   0  B     00:00    
+Errors during downloading metadata for repository 'root_':
+  - Curl error (37): Couldn't read a file:// file for file:///root/repodata/repomd.xml [Couldn't open file /root/repodata/repomd.xml]
+Error: Failed to download metadata for repo'root_': Cannot download repomd.xml: Cannot download repodata/repomd.xml: All mirrors were tried
+After searching for a long time, I finally found a solution:
+
+solution
+Find the file root_.repo in the /etc/yum.repos.d directory after opening
+Change enabled=1 to  enabled=0
+-------------------------------------------------------------
