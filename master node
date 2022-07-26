@@ -1,0 +1,339 @@
+Master node:
+------------
+
+1. api server: REST api server that allows the administrator
+to perform operations like pods creation and deployment.
+
+2. scheduler: take care of nodes management. responsible
+for where to direct traffic to a worker node or how to 
+use resources properly by making that required resources
+available
+
+3. controller manager: it is responsible to manage different
+kinds of controllers -
+	- Node controller: responsible to notify when a  node goes down
+	- Replication controller: makes sure that the correct number of pods are available
+	- Endpoints Controller: popultes the objects for pods and services
+	- Service account and Token controllers: responsible for creating
+	accounts and tokens for accessing different parts of the system.
+
+Worker node
+-----------
+
+1. Kubelet: It is a kind of supervisor of containers and makes sure
+that the required number of containers/ pods are running at any given time.
+
+2. Pod: a pod is a collection of containers that share the same resources.
+A pod encanpsulates continaers, network IP and storage resources.
+
+3. Service: pods are created and destroyed and you can trust them. Therefore
+there was a need for something that works as a proxy of underlying pods
+and provides an interface for communication irrespective of whch pod is alive.
+Services have an option to provide an externam IP so that outer world can commuincate..
+Labels are used to pick the required set of pods.
+
+
+
+----------------------------------------------------------------------------------------
+
+Importing Local images into Kubernetes
+We already have prepared configuration files for our required PHP and MySQL Images in the posts related to docker. So I created a new folder and transferred the existing Dockerfile and docker-compose.yaml in it. The goal is to create images for K8s. How to make images INSIDE a Kubernetes cluster? Not a big deal. When you install minikube, you also get a pre-installed docker. You can test it by doing an SSH to minikube.
+
+
+MiniKube in Action
+Good but how to prepare images locally and transfer to minikube’s docker. Luckily provide a way to do it.
+
+eval $(minikube docker-env)
+
+When you run the above command on your terminal it lets you interact with the docker system WITHIN the cluster:
+
+
+You can undo or getting out of minikube docker by running the command:
+
+eval $(minikube docker-env -u)
+
+I already transferred the existing Dockerfile and docker-compose.yaml file in the folder, all I have to do is to runt he docker-compose up command. Before you ask, let me clarify that you don’t have to go for this route. All you need is to BUILD your images which can easily be done by running docker build command. Since I am lazy enough, I am using same compose file to create the required images.
+
+
+It will take a while to download. Once done you can see something similar:
+
+
+As you can see, the images, learningk8s_website, PHP and MySQL are now available.
+
+Accessing Minikube
+I will be using both CLI and GUI based tools to administer the cluster. For CLI you can just use kubectl and for GUI base you can launch the web interface by running the command minikube dashboard
+
+
+MiniKube Dashboard
+The required Images are ready. It’s to create deployments so that your apps can run inside pods.
+
+What is Deployment?
+A deployment object keeps the info how pods will be created and how will they run and communicate with each other. A DeploymentController makes sure that the desired containers state is equal to the current running state. In short, it is all about how your apps will be deployed and run within containers who themselves are part of pods. We will create two deployments; one for the web server and other for MySQL DB. First we will create webserver.yaml file.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webserver
+  labels:
+    app: apache
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: apache
+  template:
+    metadata:
+      labels:
+        app: apache
+    spec:
+      containers:
+      - name: php-apache
+        image: learningk8s_website
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+Many things are similar to Docker related file. labels as I told earlier, is used to select relevant pods. Since pods are mortal and new could be created, labels are used to pick relevant pods. In our case it is app: apache. The selectors is then used to pick the pods to match labels. Learn more about them here.
+
+We then set replicas: 3. It means that a web server will have 3 instances. In the containers section I added imagePullPolicy to Never. The reason I had to do is that if you don’t do it, it tries to pull the image from main DockerHub website and if does not found, it gives error like below:
+
+
+Since I already have prepared the image locally hence I am going to use it.
+
+The deployment file is ready, I am going to run the following command to deploy it:
+
+kubectl create -f webserver.yaml
+
+
+As you can see, 3 pods are now created for the deployment webserver.
+
+You can also run kubectl get pods in the terminal to get the response:
+
+➜  LearningK8s kubectl get pods
+NAME                         READY   STATUS    RESTARTS   AGE
+webserver-65594cc568-hn6kr   1/1     Running   0          43m
+webserver-65594cc568-k8gpj   1/1     Running   0          43m
+webserver-65594cc568-vvr4s   1/1     Running   0          43m
+If you are on the dashboard, clicking on a single pod gives you more details:
+
+
+kubectl describe pod webserver-65594cc568-hn6kr and it returns:
+
+
+Alright, the pod is created but we can’t access it despite having its IP, the reason because the Pod IP is not public, more, the life of pod is uncertain so even if we know the IP it’s useless to use it in our app. So is there any solution? Yes, there it is and it’s called service.
+
+Kubernetes Service
+A service is responsible to make possible accessing multiple pods in a way that the end-user does not know which application instance is being used. When a user tries to access an app, for instance, a web server here, it actually makes a request to a service which itself then check where it should forward the request.
+
+
+Makes sense, No? Now in order to access the webserver you will just access the IP and port as deifned in the service configuration file.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: web-service
+  labels:
+    run: web-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: apache
+Here the type is selected to LoadBalancer because we want the service to decide the best pod to serve the request. By doing this you are automatically scaling your app from one server to the multiple web servers to deal with high traffic. How awesome is that! We will use the same kubectl create -f webserver-svc.yaml command. The create command knows which kind of obect to be created by reading kind attribute. You coud have a single file for both deployment and service seperated by --
+
+Once the service is created, you can see it in the dashboard as well as via CLI. Running a will give you the following result:
+
+➜  LearningK8s kubectl get svc                  
+NAME          TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+kubernetes    ClusterIP      10.96.0.1        <none>        443/TCP        3d9h
+web-service   LoadBalancer   10.103.182.115   <pending>     80:30882/TCP   5m33s
+Don’t worry about <pending> thing. It is because we are using Loadbalancer and since we are on minikube instead of some Cloud Provider, it will remain pending. In case if you run on Google Cloud or Azure you will get an IP for it.
+
+Now, the service is ready, it’s time to check whether the webserver is running. There are two ways to run it. First, run minikube service list and it will return you the IP along with the port. The other way is minikube service web-service which again will open the same URL. If all goes well you should see this page:
+
+
+Same method of creating deployment and service for MySQLDB but this time only a single instnace of MySQLDB will be used.
+
+apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+kind: Deployment
+metadata:
+name: mysql
+spec:
+selector:
+matchLabels:
+app: mysql8
+strategy:
+type: Recreate
+template:
+metadata:
+labels:
+app: mysql8
+spec:
+containers:
+- image: mysql:8.0
+name: mysql
+imagePullPolicy: Never
+env:
+- name: MYSQL_ROOT_PASSWORD
+value: .sweetpwd.
+- name: MYSQL_DATABASE
+value: my_db
+- name: MYSQL_USER
+value: db_user
+- name: MYSQL_PASSWORD
+value: .mypwd
+args: ["--default-authentication-plugin=mysql_native_password"]
+ports:
+- containerPort: 3306
+name: mysql8
+Just like we did in docker, here we pass the mysql8 related arguments as args and environment variables also passed in. Now, let’s create the relevant service.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql8-service
+  labels:
+    app: mysql8
+spec:
+  type: NodePort
+  ports:
+  - port: 3306
+    protocol: TCP
+  selector:
+    app: mysql8
+Here I set the the type to NodePort because I want to connect my favorite MySQL client with the DB inside the cluster. I can do it with LoadBalancer as well but since we are using a single DB server so NodePort is good enough to do our work.
+
+Alright, the MySQL service is created by running kubectl create -f mysql-svc.yaml which we can witness on the dashboard.
+
+➜  LearningK8s minikube service list
+|-------------|----------------------|-----------------------------|
+|  NAMESPACE  |         NAME         |             URL             |
+|-------------|----------------------|-----------------------------|
+| default     | kubernetes           | No node port                |
+| default     | mysql8-service       | http://192.168.99.100:31217 |
+| default     | web-service          | http://192.168.99.100:30882 |
+| kube-system | kube-dns             | No node port                |
+| kube-system | kubernetes-dashboard | http://192.168.99.100:30000 |
+|-------------|----------------------|-----------------------------|
+You may also use minikube service web-service to open the same URL.
+
+You can connect your local MySQL client.
+
+
+Now I make the required connection string changes in the code:
+
+<?php
+echo "Inside K8s with MySQL <br>";
+$conn = new mysqli("mysql8-service", "root", ".sweetpwd.", "my_db");
+// Check connection
+if ($conn->connect_error) {
+ die("Connection failed: " . $conn->connect_error);
+}
+$sql = "SELECT name FROM users";
+$result = $conn->query($sql);
+if ($result->num_rows > 0) {
+ // output data of each row
+ while($row = $result->fetch_assoc()) {
+  echo $row['name']."<br>";
+ }
+} else {
+ echo "0 results";
+}
+$conn->close();
+Like Docker here I passed the service name instead of the actual IP because both IP/Port could change and service name here will resolve the actual address. If everything goes fine then this screen should made your day.
+
+
+OK, you did almost your job, only two things left. Right now If you make changes in code, it will not reflect. Also, if you remove MySQL deployment or even restart minikube it will also erase the data. What is required is mounting volume.
+
+So, for making changes in the code we have to first mount local folder in Minikube and then mount minikubefolder to the cluster. For that, we have to stop minikube and start with the following parameters.
+
+minikube start --mount-string /Development/PetProjects/LearningK8s/src:/data --mount
+
+I passed the local path with --mount-string which is then mapped to /data inside minikube. In the end, I passed the --mount parameter.
+
+
+You can see that the index.php exists in data folder. This is 50% done, we still have to push things to the machines within containers. For that I will make changes in the Deployment so that the spec will now look like:
+
+spec:
+      containers:
+      - name: php-apache
+        image: learningk8s_website
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: hostvol
+          mountPath: /var/www/html/
+      volumes:
+        - name: hostvol
+          hostPath:
+            path: /data
+I created a volume with name hostvol and then mount it to the DocumentRoot of Apache. I made changes and then ran the following command to update the existing deployment.
+
+kubectl apply -f webserver.yaml
+
+Now if you make changes in code it would reflect instantly as if you are working on local machine.
+
+So far so good, now all is left to retain MySQL data. In order to do it, we need PersistentVolumeClaim
+
+Persistent Volume Claim configuration allocates space so that future MySQL data can be stored independent of a pod’s life.
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pv-claim
+  labels:
+    app: mysql8
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi #5 GB
+Here ReadWriteOnce access mode is set which means that only a single node can mount it in RW mode. In a real scenario you might have to set ReadWriteMany. Create the claim by running kubectl create -f mysql-pv-claim.yaml and then update the MySQL deployment. Don’t forget to create the claim first otherwise you would have mounting issue.
+
+spec:
+      containers:
+      - image: mysql:8.0
+        name: mysql
+        imagePullPolicy: Never
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: .sweetpwd.
+        - name: MYSQL_DATABASE
+          value: my_db
+        - name: MYSQL_USER
+          value: db_user
+        - name: MYSQL_PASSWORD
+          value: .mypwd
+        args: ["--default-authentication-plugin=mysql_native_password"]
+        ports:
+        - containerPort: 3306
+          name: mysql8
+        volumeMounts:
+          - name: mysql-persistent-storage
+            mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pv-claim
+I set the persistentVolumeClaim to the one created by us and also mount to default path of mysql server. Update the MySQL file as did for the web server by running kubectl apply -f mysql.yaml
+----------------------------------------------------------------------------------------
+
+In Kubernetes, nodes, pods and services all have their own IPs. In many cases, the node IPs, pod IPs, and some service IPs on a cluster will not be routable, so they will not be reachable from a machine outside the cluster, such as your desktop machine.
+
+Ways to connect 
+--------------
+Access services through public IPs.
+Use a service with type NodePort or LoadBalancer to make the service reachable outside the cluster. See the services and kubectl expose documentation.
+Depending on your cluster environment, this may only expose the service to your corporate network, or it may expose it to the internet. Think about whether the service being exposed is secure. Does it do its own authentication?
+Place pods behind services. To access one specific pod from a set of replicas, such as for debugging, place a unique label on the pod and create a new service which selects this label.
+In most cases, it should not be necessary for application developer to directly access nodes via their nodeIPs.
+
+
+
+Discovering builtin services
+Typically, there are several services which are started on a cluster by kube-system. Get a list of these with the kubectl cluster-info command:
+
+kubectl cluster-info

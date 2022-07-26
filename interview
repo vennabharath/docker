@@ -1,0 +1,536 @@
+ Kubernetes interview questions related to definitions and  functions
+ ---------------------------------------------------------------------
+ What does the master node do in Kubernetes?
+What does the Kube-API server do?
+Explain what nodes are in Kubernetes.
+Explain what pods are in Kubernetes.
+Explain what the Kube-scheduler does.
+Explain what container clusters are.
+Explain what a namespace is.
+Explain what a heapster is.
+What are some examples of controller managers?
+Name some Kubernetes services.
+Explain what ClusterIP is.
+Explain what NodePort is.
+Explain what the LoadBalancer is in Kubernetes.
+Explain the process of monitoring container resources.
+What is meant by “Cloud controller manager”?
+Outline what federated clusters are.
+Explain what headless services are.
+Explain how Kubectl works.
+Explain what Kubectl does.
+Explain what Kube-proxy is.
+Explain what the Ingress network is.
+Explain how the Ingress network works.
+Explain what ETCD is.
+Explain what a Daemon set is.
+What is an equity-based selector?
+What is a set-based selector?
+Explain what Minikube is.
+
+---------------------------------------------------------------------
+
+ Explain what container clusters are.
+Can your candidates explain that a cluster of containers is a group of node machine elements? Can they also explain that the clusters set specific communication routes between each container that runs on the nodes?
+
+2. Explain what the Kube-scheduler does.
+Applicants should know that the Kube-scheduler is a control plane that assigns nodes to particular pods. Can applicants explain that the scheduler also considers which nodes are valid assignees or placements for the pods located in the scheduling queue?
+
+3. Explain what pods are in Kubernetes.
+Candidates should be able to explain that a pod is a structure that wraps containers. Can they also explain that pods wrap containers to facilitate communication between different containers located in the same pods, even though they don’t run directly within Kubernetes itself?
+
+4. What is an equity-based selector?
+Equity-based selectors facilitate pod filtering and filter them using values and label keys. They search for specific pods with identical phrases to a specific filter label.
+
+5. What is a set-based selector?
+Set-based selectors facilitate key filtering using a set of values. They search for specific pods with a label that the set mentions.
+
+----------------------------------------------------------------------------------
+
+What are the main recommended Kubernetes security measures?
+Which method would you use to set up a static IP for load balancers?
+What are the critical components of a node status in Kubernetes?
+What does the deploying applications process involve in Kubernetes?
+Explain what a replica set does.
+Explain what a replication controller does.
+Explain the difference between replica sets and replication controllers.
+How can an organization enhance the efficiency of its technical operations and keep costs low using Kubernetes?
+How would you help an organization change its deployment strategy with Kubernetes and build a more scalable platform?
+How can Kubernetes help with workload distribution optimization?
+
+----------------------------------------------------------------------------------
+
+difference between a replica set and replication controllers.
+Replica sets and replication controllers have similar functions and ensure that a certain number of pod replicas run at a specific moment.
+
+The main difference between them is that replica sets function using set-based selectors, and replication controllers function with equity-based selectors.
+
+2. How can an organization enhance the efficiency of its technical operations and keep costs low using Kubernetes?
+Using a DevOps framework can help organizations enhance the efficiency of their technical operations.
+
+Developers working on projects like these may choose to build a CI/CD pipeline in the cloud. They can then schedule containers in clusters and start orchestrating using Kubernetes.
+
+3. How would you help an organization change its deployment strategy with Kubernetes and build a more scalable platform?
+Candidates should know that organizations can implement a microservice architecture and begin using Docker containers after shifting private data centers to a cloud environment. With the base framework prepared, the organization can use Kubernetes to quickly and autonomously build applications.
+
+4. How can Kubernetes help with workload distribution optimization?
+Since Kubernetes ensures that resources are efficiently optimized, this orchestration tool facilitates resource distribution. Candidates may also explain that Kubernetes ensures that developers use specific resources that an application requires, enhancing the overall operational efficiency.
+
+5. Which method would you use to set up a static IP for load balancers?
+Can your applicants explain that changing DNS records will help them set up a static IP for the load balancer? Can they also explain that this method works because Kubernetes can also assign new static IP addresses?
+
+----------------------------------------------------------------------------------
+
+What are the main differences between the Docker Swarm and Kubernetes?
+Docker Swarm is Docker’s native, open-source container orchestration platform that is used to cluster and schedule Docker containers. Swarm differs from Kubernetes in the following ways:
+
+Docker Swarm is more convenient to set up but doesn’t have a robust cluster, while Kubernetes is more complicated to set up but the benefit of having the assurance of a robust cluster
+Docker Swarm can’t do auto-scaling (as can Kubernetes); however, Docker scaling is five times faster than Kubernetes 
+Docker Swarm doesn’t have a GUI; Kubernetes has a GUI in the form of a dashboard 
+Docker Swarm does automatic load balancing of traffic between containers in a cluster, while Kubernetes requires manual intervention for load balancing such traffic  
+Docker requires third-party tools like ELK stack for logging and monitoring, while Kubernetes has integrated tools for the same 
+Docker Swarm can share storage volumes with any container easily, while Kubernetes can only share storage volumes with containers in the same pod
+Docker can deploy rolling updates but can’t deploy automatic rollbacks; Kubernetes can deploy rolling updates as well as automatic rollbacks
+6. What is the difference between deploying applications on hosts and containers?
+Deploying Applications consist of an architecture that has an operating system. The operating system will have a kernel that holds various libraries installed on the operating system needed for an application.
+
+Whereas container host refers to the system that runs the containerized processes. This kind is isolated from the other applications; therefore, the applications must have the necessary libraries. The binaries are separated from the rest of the system and cannot infringe any other application.
+
+7. What are the features of Kubernetes?
+Kubernetes places control for the user where the server will host the container. It will control how to launch. So, Kubernetes automates various manual processes. 
+Kubernetes manages various clusters at the same time. 
+It provides various additional services like management of containers, security, networking, and storage. 
+Kubernetes self-monitors the health of nodes and containers. 
+With Kubernetes, users can scale resources not only vertically but also horizontally that too easily and quickly.
+8. What are the main components of Kubernetes architecture?
+There are two primary components of Kubernetes Architecture: the master node and the worker node. Each of these components has individual components in them.
+
+9. Explain the working of the master node in Kubernetes?
+The master node dignifies the node that controls and manages the set of worker nodes. This kind resembles a cluster in Kubernetes. The nodes are responsible for the cluster management and the API used to configure and manage the resources within the collection. The master nodes of Kubernetes can run with Kubernetes itself, the asset of dedicated pods.
+
+Free Course: Introduction to Kubernetes
+Master the Fundamentals of KubernetesENROLL NOWFree Course: Introduction to Kubernetes
+10. What is the role of Kube-apiserver?
+This kind validates and provides configuration data for the API objects. It includes pods, services, replication controllers. Also, it provides REST operations and also the frontend of the cluster. This frontend cluster state is shared through which all other component interacts.
+
+11. What is a node in Kubernetes?
+A node is the smallest fundamental unit of computing hardware. It represents a single machine in a cluster, which could be a physical machine in a data center or a virtual machine from a cloud provider. Each machine can substitute any other machine in a Kubernetes cluster. The master in Kubernetes controls the nodes that have containers. 
+
+12. What does the node status contain?
+The main components of a node status are Address, Condition, Capacity, and Info.
+
+13. What process runs on Kubernetes Master Node? 
+The Kube-api server process runs on the master node and serves to scale the deployment of more instances.
+
+14. What is a pod in Kubernetes?
+In this Kubernetes interview question, try giving a thorough answer instead of a one-liner. Pods are high-level structures that wrap one or more containers. This is because containers are not run directly in Kubernetes. Containers in the same pod share a local network and the same resources, allowing them to easily communicate with other containers in the same pod as if they were on the same machine while at the same time maintaining a degree of isolation.
+
+15. What is the job of the kube-scheduler?
+The kube-scheduler assigns nodes to newly created pods.
+
+16. What is a cluster of containers in Kubernetes? 
+A cluster of containers is a set of machine elements that are nodes. Clusters initiate specific routes so that the containers running on the nodes can communicate with each other. In Kubernetes, the container engine (not the server of the Kubernetes API) provides hosting for the API server.
+
+Post Graduate Program in DevOps
+Designed in collaboration with Caltech CTMEEXPLORE COURSEPost Graduate Program in DevOps
+17. What is the Google Container Engine?
+The Google Container Engine is an open-source management platform tailor-made for Docker containers and clusters to provide support for the clusters that run in Google public cloud services. 
+
+18. What are Daemon sets?
+A Daemon set is a set of pods that runs only once on a host. They are used for host layer attributes like a network or for monitoring a network, which you may not need to run on a host more than once.
+
+19. What is ‘Heapster’ in Kubernetes?
+In this Kubernetes interview question, the interviewer would expect a thorough explanation. You can explain what it is and also it has been useful to you (if you have used it in your work so far!). A Heapster is a performance monitoring and metrics collection system for data collected by the Kublet. This aggregator is natively supported and runs like any other pod within a Kubernetes cluster, which allows it to discover and query usage data from all nodes within the cluster.
+
+20. What is Minikube?
+With the help of Minikube, users can Kubernetes locally. This process lets the user run a single-node Kubernetes cluster on your personal computer, including Windows, macOS, and Linus PCs. With this, users can try out Kubernetes also for daily development work.
+
+21. What is a Namespace in Kubernetes?
+Namespaces are used for dividing cluster resources between multiple users. They are meant for environments where there are many users spread across projects or teams and provide a scope of resources.
+
+22. Name the initial namespaces from which Kubernetes starts?
+Default
+Kube – system
+Kube – public
+23. What is the Kubernetes controller manager?
+The controller manager is a daemon that is used for embedding core control loops, garbage collection, and Namespace creation. It enables the running of multiple processes on the master node even though they are compiled to run as a single process.
+
+24. What are the types of controller managers?
+The primary controller managers that can run on the master node are the endpoints controller, service accounts controller, namespace controller, node controller, token controller, and replication controller.
+
+25. What is etcd?
+Kubernetes uses etcd as a distributed key-value store for all of its data, including metadata and configuration data, and allows nodes in Kubernetes clusters to read and write data. Although etcd was purposely built for CoreOS, it also works on a variety of operating systems (e.g., Linux, BSB, and OS X) because it is open-source. Etcd represents the state of a cluster at a specific moment in time and is a canonical hub for state management and cluster coordination of a Kubernetes cluster.
+
+26. What are the different services within Kubernetes?
+Different types of Kubernetes services include: 
+
+Cluster IP service
+Node Port service
+External Name Creation service and 
+Load Balancer service
+Free Course: Introduction to DevOps Tools
+Master the Fundamentals of DevOps ToolsENROLL NOWFree Course: Introduction to DevOps Tools
+27. What is ClusterIP?
+The ClusterIP is the default Kubernetes service that provides a service inside a cluster (with no external access) that other apps inside your cluster can access. 
+
+28. What is NodePort? 
+The NodePort service is the most fundamental way to get external traffic directly to your service. It opens a specific port on all Nodes and forwards any traffic sent to this port to the service.
+
+29. What is the LoadBalancer in Kubernetes? 
+The LoadBalancer service is used to expose services to the internet. A Network load balancer, for example, creates a single IP address that forwards all traffic to your service. 
+
+30. What is the Ingress network, and how does it work?
+ An ingress is an object that allows users to access your Kubernetes services from outside the Kubernetes cluster. Users can configure the access by creating rules that define which inbound connections reach which services.
+
+How does it work- This is an API object that provides the routing rules to manage the external users' access to the services in the Kubernetes cluster through HTTPS/ HTTP. With this, users can easily set up the rules for routing traffic without creating a bunch of load balancers or exposing each service to the nodes.
+
+31. What do you understand by Cloud controller manager?
+You must have heard about Public, Private and hybrid clouds. With the help of cloud infrastructure technologies, you can run Kubernetes on them. In the context of Cloud Controller Manager, it is the control panel component that embeds the cloud-specific control logic. This process lets you link the cluster into the cloud provider's API and separates the elements that interact with the cloud platform from components that only interact with your cluster. 
+
+This also enables the cloud providers to release the features at a different pace compared to the main Kubernetes project. It is structured using a plugin mechanism and allows various cloud providers to integrate their platforms with Kubernetes.
+
+32. What is Container resource monitoring?
+This refers to the activity that collects the metrics and tracks the health of containerized applications and microservices environments. It helps to improve health and performance and also makes sure that they operate smoothly.
+
+33. What is the difference between a replica set and a replication controller?
+A replication controller is referred to as RC in short. It is a wrapper on a pod. This provides additional functionality to the pods, which offers replicas. 
+
+It monitors the pods and automatically restarts them if they fail. If the node fails, this controller will respawn all the pods of that node on another node. If the pods die, they won't be spawned again unless wrapped around a replica set. 
+
+Replica Set, on the other hand, is referred to as rs in short. It is told as the next-generation replication controller. This kind of support has some selector types and supports the equality-based and the set-based selectors. 
+
+It allows filtering by label values and keys. To match the object, they have to satisfy all the specified label constraints.
+
+34. What is a headless service?
+A headless service is used to interface with service discovery mechanisms without being tied to a ClusterIP, therefore allowing you to directly reach pods without having to access them through a proxy. It is useful when neither load balancing nor a single Service IP is required. 
+
+35. What are federated clusters?
+The aggregation of multiple clusters that treat them as a single logical cluster refers to cluster federation. In this, multiple clusters may be managed as a single cluster. They stay with the assistance of federated groups. Also, users can create various clusters within the data center or cloud and use the federation to control or manage them in one place. 
+
+You can perform cluster federation by doing the following: 
+
+Cross cluster that provides the ability to have DNS and Load Balancer with backend from the participating clusters. 
+
+Users can sync resources across different clusters in order to deploy the same deployment set across the various clusters.
+
+DevOps Engineer Exam Practice Test
+Assess your understanding of the DevOps conceptsTRY ANSWERINGDevOps Engineer Exam Practice Test
+36. What is Kubelet?
+The kubelet is a service agent that controls and maintains a set of pods by watching for pod specs through the Kubernetes API server. It preserves the pod lifecycle by ensuring that a given set of containers are all running as they should. The kubelet runs on each node and enables the communication between the master and slave nodes.
+
+37. What is Kubectl?
+Kubectl is a CLI (command-line interface) that is used to run commands against Kubernetes clusters. As such, it controls the Kubernetes cluster manager through different create and manage commands on the Kubernetes component
+
+38. Give examples of recommended security measures for Kubernetes.
+Examples of standard Kubernetes security measures include defining resource quotas, support for auditing, restriction of etcd access, regular security updates to the environment, network segmentation, definition of strict resource policies, continuous scanning for security vulnerabilities, and using images from authorized repositories.
+
+39. What is Kube-proxy? 
+Kube-proxy is an implementation of a load balancer and network proxy used to support service abstraction with other networking operations. Kube-proxy is responsible for directing traffic to the right container based on IP and the port number of incoming requests.
+-------------------------------------------------------------------------------
+
+What is the difference between config map and secret? (Differentiate the answers as with examples)
+
+Config maps ideally stores application configuration in a plain text format whereas Secrets store sensitive data like password in an encrypted format. Both config maps and secrets can be used as volume and mounted inside a pod through a pod definition file.
+
+Config map:
+
+                 kubectl create configmap myconfigmap
+ --from-literal=env=dev
+Secret:
+
+echo -n ‘admin’ > ./username.txt
+echo -n ‘abcd1234’ ./password.txt
+kubectl create secret generic mysecret --from-file=./username.txt --from-file=./password.txt
+
+----------------------------------------------------------------------------------
+1) What is Kubernetes?
+
+Kubernetes is a container management system developed in the Google platform. The purpose of Kubernetes is to manage a containerized application in various types of physical, virtual, and cloud environments. Google Kubernetes is a highly flexible container tool to deliver even complex applications, consistently. Applications run on clusters of hundreds to thousands of individual servers.
+
+2) Define node in Kubernetes
+
+A node the smallest unit of hardware. It defines a single machine in a cluster that can be a virtual machine from a cloud provider or physical machine in the data center. Every machine available in the Kubernetes cluster can substitute other machines.
+
+3) What is the work of a kube-scheduler?
+
+Kube-scheduler is the default scheduler for Kubernetes. It assigns nodes to newly created pods.
+
+4) Define daemon sets
+
+Daemon sets are a set of pods that runs on a host. They are used for host layers attributes like monitoring network or simple network.
+
+5) Define Heapster in Kubernetes
+
+A Heapster is a metrics collection and performance monitoring system for data that are collected by the Kublet.
+
+6) What tasks are performed by Kubernetes?
+
+Kubernetes is the Linux kernel which is used for distributed systems. It helps you to be abstract the underlying hardware of the nodes(servers) and offers a consistent interface for applications that consume the shared pool of resources.
+
+7) Define Kubernetes controller manager
+The controller manager is a daemon used for garbage collection, core control loops, and namespace creation. It enables the running of more than one process on the master node.
+
+8) Why use namespace in Kubernetes?
+
+Namespaces in Kubernetes are used for dividing cluster resources between users. It helps the environment where more than one user spread projects or teams and provides a scope of resources.
+
+9) Why use Kubernetes?
+
+Kubernetes is used because:
+
+Kubernetes can run on-premises bare metal, OpenStack, public clouds Google, Azure, AWS, etc.
+It helps you to avoid vendor lock issues as it can use any vendor-specific APIs or services except where Kubernetes provides an abstraction, e.g., load balancer and storage.
+It will enable applications that need to be released and updated without any downtime.
+Kubernetes allows you to assure those containerized apps run where and when you want and help you to find resources and tools which you want to work.
+
+10) What are the features of Kubernetes?
+The features of Kubernetes are:
+
+Automated Scheduling
+Self-Healing Capabilities
+Automated rollouts & rollback
+Horizontal Scaling & Load Balancing
+Offers environment consistency for development, testing, and production
+Infrastructure is loosely coupled to each component can act as a separate unit
+Provides a higher density of resource utilization
+Offers enterprise-ready features
+Application-centric management
+Auto-scalable infrastructure
+You can create predictable infrastructure
+11) Mention the types of controller managers
+
+Types of controller managers are: 1) endpoints controller, 2) service accounts controller, 3) node controller, 4) namespace controller, 5) replication controller, 6) token controller.
+
+12) Explain Kubernetes Architecture
+
+
+Kubernetes Architecture Diagram
+Master Node: The master node is the first and most vital component which is responsible for the management of Kubernetes cluster. It is the entry point for all kinds of administrative tasks. There may be more than one master node in the cluster to check for fault tolerance.
+API Server: The API server acts as an entry point for all the REST commands used for controlling the cluster.
+Scheduler: The scheduler schedules the tasks to the slave node. It stores the resource usage information for every slave node. It is responsible for distributing the workload.
+Etcd: etcd components, store configuration detail, and wright values. It communicates with the most component to receive commands and work. It also manages network rules and port forwarding activity.
+Worker/Slave nodes: Worker nodes are another essential component that contains all the required services to manage the networking between the containers, communicate with the master node, which allows you to assign resources to the scheduled containers.
+Kubelet: It gets the configuration of a Pod from the API server and ensures that the described containers are up and running.
+Docker Container: Docker container runs on each of the worker nodes, which runs the configured pods.
+Pods: A pod is a combination of single or multiple containers that logically run together on nodes.
+
+AD
+
+13) List various services available in Kubernetes
+Various services available in Kubernetes are 1) Cluster IP service, 2) Load Balancer service, 3) Node Port service, 4) External Name Creation service.
+
+14) Define Cluster IP
+
+The Cluster IP is a Kubernetes service that offers a service inside the cluster that other apps inside cluster can access.
+
+15) Explain node port
+
+The node port service is a fundamental way to get external traffic to your service. It opens a particular port on all nodes and forwards network traffic sent to this port.
+
+16) Define kubelet
+
+The kubelet is a service agent which controls and maintains group pf pods by checking pod specification using Kubernetes. The kubelet runs on each node and allows to communicate between a master node and a slave node.
+
+17) What are the disadvantages of Kubernetes?
+
+Kubernetes dashboard is not as helpful as it should be
+Security is not very effective.
+It is very complex and can reduce productivity
+Kubernetes is more costly than its alternatives.
+18) What is Kube-proxy?
+
+Kube-proxy is an implementation of both a network proxy and a load balancer. It is used to support service abstraction used with other networking operations. It is responsible for directing traffic to the container depend on IP and the port number.
+
+19)What is the difference between Kubernetes and Docker Swarm?
+
+The difference between Kubernetes and Docker Swarm is:
+
+Kubernetes	Docker Swarm
+Kubernetes Provides an auto-scaling feature.	Docker Swarm does not provide an auto-scaling feature.
+Manually configure your load balancing settings.	Does auto load balancing
+Installation is complicated & time-consuming.	Installation is easy & fast.
+GUI is available.	GUI not available.
+It provides a built-in load balancing technique.	Process scheduling is done to maintain services while updating.
+20) Define Ingress Network
+
+Ingress network is defined as a collection of rules which allow permission for connections into the Kubernetes cluster.
+
+AD
+
+21) What is Kubectl used for?
+Kubectl is a software for controlling Kubernetes clusters. Ctl stands for control, which is a command-line interface to pass the command to the cluster and manage the Kubernetes component.
+
+22) What is GKE?
+
+GKE or Google Container Engine is a management platform that supports clusters and Docker containers that run within public cloud services of Google.
+
+23) Why load balancer is needed?
+
+A load balancer is needed because it gives a standard way to distribute network traffic among different services, which runs in the backend.
+
+24) How to run Kubernetes locally?
+
+Kubernetes can be run locally using the Minikube tool. It runs a single-node cluster in a VM (virtual machine) on the computer. Therefore, it offers the ideal way for users who have just started learning Kubernetes.
+
+25) What are the tools that are used for container monitoring?
+
+Tools that are used for container monitoring are:
+
+Heapster
+cAdvisor
+Prometheus
+InfluxDB
+Grafana
+26) List components of Kubernetes
+
+There are three components of Kubernetes, they are:
+
+Addons
+Node components
+Master Components
+27) Define headless service
+
+Headless service is defined as a service that uses IP address, but instead of load balancing, it returns of associated pods.
+
+28) What are the important components of node status?
+
+The important component of node status are:
+
+Condition
+Capacity
+Info
+Address
+29) What is minikube?
+
+Minikube is a software that helps the user to run Kubernetes. It runs on the single nodes that are inside VM on your computer. This tool is also used by programmers who are developing an application using Kubernetes.
+
+30) Mention the uses of GKE
+
+The uses of the GKE (Google Kubernetes Engine) are:
+
+It can be used to create docker container clusters
+Resize application controllers
+Update and then upgrade the clusters of container
+Debug cluster of the container.
+GKE can be used to creates a replication controller, jobs, services, container pods, or load balancer.
+31) Define orchestration in Kubernetes
+
+Orchestration in Kubernetes defines as an automatic method of scheduling the work of every container. It is used for applications that are based on microservices within clusters.
+
+32) Explain Prometheus in Kubernetes
+
+Prometheus is an application that is used for monitoring and alerting. It can be called out to your systems, grab real-time metrics, compress it, and stores properly in a database.
+
+33) List tools for container orchestration
+
+The tools for container orchestration are 1) Docker swarm, 2) Apache Mesos, and 3) Kubernetes.
+
+34) Mention the list of objects of Kubernetes?
+
+Objects that are used in Kubernetes are: 1) Pods, 2) Replication sets and controllers, 3) Jobs and cron jobs, 4) Daemon sets, 5) Distinctive identities, 6) Deployments, 7) and Stateful sets.
+
+35) Define Stateful sets in Kubernetes
+
+The stateful set is a workload API object that is used to manage the stateful application. It can also be used to manage the deployments and scaling the sets of pods. The state information and other data of stateful pods are store in the disk storage, which connects with stateful set.
+
+36) Why use Daemon sets?
+
+Daemon sets are used because:
+
+It enables to runs storage platforms like ceph and glusterd on each node.
+Daemon sets run the logs collection on every node such as filebeat or fluentd.
+It performs node monitoring on each and every node.
+37) Explain Replica set
+
+A Replica set is used to keep replica pods stable. It enables us to specify the available number of identical pods. This can be considered a replacement for the replication .controller.
+
+38) List out some important Kubectl commands:
+
+The important Kubectl commands are:
+
+kubectl annotate
+kubectl cluster-info
+kubectl attach
+kubectl apply
+kubectl config
+kubectl autoscale
+kubectl config current-context
+kubectl config set.
+39) Why uses Kube-apiserver?
+
+Kube-apiserver is an API server of Kubernetes that is used to configure and validate API objects, which include services, controllers, etc. It provides the frontend to the cluster’s shared region using which components interact with each other.
+
+40) Explain the types of Kubernetes pods
+
+There are two types of pods in Kubernetes:
+
+Single Container Pod: It can be created with the run command.
+Multicontainer pods: It can be created using the “create” command in Kubernetes.
+41) What are the labels in Kubernetes?
+
+Labels are a collection of keys that contain some values. The key values are connected to pods, replication controllers, and associated services. Generally, labels are added to some object during its creation time. They can be modified by the users at run time.
+
+42) What are the objectives of the replication controller?
+
+The objectives of the replication controller are:
+
+It is responsible for controlling and administering the pod lifecycle.
+It monitors and verifies whether the allowed number of replicas are running or not.
+The replication controller helps the user to check the pod status.
+It enables to alter a pod. The user can drag its position the way interested in it.
+43) What do you mean by persistent volume?
+
+A persistent volume is a storage unit that is controlled by the administrator. It is used to manage an individual pod in a cluster.
+
+44) What are Secrets in Kubernetes?
+
+Secrets are sensitive information like login credentials of the user. They are objects in Kubernetes that stores sensitive information like username and password after performing encryption.
+
+45) What is Sematext Docker Agent?
+
+Sematext Docker agent is a log collection agent with events and metrics. It runs as a small container in each Docker host. These agents gather metrics, events, and logs for all cluster nodes and containers.
+
+46) Define OpenShift
+
+OpenShift is a public cloud application development and hosting platform developed by Red Hat. It offers automation for management so that developers can focus on writing the code.
+
+47) Define K8s
+
+K8s (K-eight characters-S) is a term for Kubernetes. It is an open-source orchestration framework for the containerized applications.
+
+48) What are federated clusters?
+
+Federated clusters multiple clusters that are managed as a single cluster.
+
+49) Mention the difference between Docker volumes and Kubernetes Volumes
+
+Kubernetes Volumes	Docker Volumes
+Volumes are not limited to any container.	Volumes are limited to a pod in the container.
+Kubernetes volumes support all containers deployed in a pod of Kubernetes.	Docker volumes do not support all containers deployed in Docker.
+50) What are the ways to provide API-Security on Kubernetes?
+
+The ways to provide API-Security on Kubernetes are:
+
+Using correct auth mode with API server authentication mode= Node.
+Make kubeless that protects its API via authorization-mode=Webhook.
+Ensure the kube-dashboard uses a restrictive RBAC (Role-Based Access Control) policy
+51) What is ContainerCreating pod?
+
+A ContainerCreating pod is one that can be scheduled on a node but can’t start up properly.
+
+52) What are the types of Kubernetes Volume?
+
+The types of Kubernetes Volume are:
+
+EmptyDir
+GCE persistent disk
+Flocker
+HostPath
+NFS
+ISCSI
+rbd
+PersistentVolumeClaim
+downwardAPI
+53) Explain PVC
+
+The full form of PVC stands for Persistent Volume Claim. It is storage requested by Kubernetes for pods. The user does not require to know the underlying provisioning. This claim should be created in the same namespace where the pod is created.
