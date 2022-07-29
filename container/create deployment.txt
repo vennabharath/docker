@@ -1,0 +1,26 @@
+kubectl run sampl-httpd --image=nginx --replicas=2 --port=80
+
+------------------------------------------------------------
+
+The above command will create a deployment named sampl-httpd and
+two pods
+
+These pods are not accessible to the outside world. So the deployment
+needs to be exposed
+
+----------------------------------------------------------------
+
+kubectl expose deployment sampl-httpd --port=80 --type=LoadBalancer
+
+-----------------------------------------------------------------
+
+Now kubernetes will create a external IP
+
+Inorder to see the ip the following command can be run
+
+kubectl get services --watch
+
+kubernetes ClusterIP          10.0.0.1          <none>             443/TCP            1d
+sampl-httpd LoadBalancer       10.0.179.76       13.92.209.60       80:31102/TCP    6m
+
+curl "http://13.92.209.60"

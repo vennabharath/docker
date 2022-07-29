@@ -1,0 +1,172 @@
+Run single instance stateful application
+----------------------------------------
+
+Deploy mysql
+------------
+
+Deploy MySQL
+
+You can run a stateful application by creating a Kubernetes Deployment and connecting it to an existing PersistentVolume using a PersistentVolumeClaim. For example, this YAML file describes a Deployment that runs MySQL and references the PersistentVolumeClaim. The file defines a volume mount for /var/lib/mysql, and then creates a PersistentVolumeClaim that looks for a 20G volume. This claim is satisfied by any existing volume that meets the requirements, or by a dynamic provisioner.
+
+Note: The password is defined in the config yaml, and this is insecure. See Kubernetes Secrets for a secure solution.
+
+application/mysql/mysql-deployment.yaml Copy application/mysql/mysql-deployment.yaml to clipboard
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  ports:
+  - port: 3306
+  selector:
+    app: mysql
+  clusterIP: None
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - image: mysql:5.6
+        name: mysql
+        env:
+          # Use secret in real usage
+        - name: MYSQL_ROOT_PASSWORD
+          value: password
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pv-claim
+
+application/mysql/mysql-pv.yaml Copy application/mysql/mysql-pv.yaml to clipboard
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysql-pv-volume
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/mnt/data"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysql-pv-claim
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi
+
+Deploy the PV and PVC of the YAML file:
+
+ kubectl apply -f https://k8s.io/examples/application/mysql/mysql-pv.yaml
+Deploy the contents of the YAML file:
+
+ kubectl apply -f https://k8s.io/examples/application/mysql/mysql-deployment.yaml
+Display information about the Deployment:
+
+ kubectl describe deployment mysql
+
+ List the pods created by the Deployment:
+
+ kubectl get pods -l app=mysql
+The output is similar to this:
+
+ NAME                   READY     STATUS    RESTARTS   AGE
+ mysql-63082529-2z3ki   1/1       Running   0          3m
+Inspect the PersistentVolumeClaim:
+
+ kubectl describe pvc mysql-pv-claim
+
+ Accessing the MySQL instance
+The preceding YAML file creates a service that allows other Pods in the cluster to access the database. The Service option clusterIP: None lets the Service DNS name resolve directly to the Pod's IP address. This is optimal when you have only one Pod behind a Service and you don't intend to increase the number of Pods.
+
+Run a MySQL client to connect to the server:
+
+kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -p password   - this is wrong no space between p and password
+kubectl run -it --rm --image=mysql:5.6 --restart=Never mysql-client -- mysql -h mysql -ppassword 
+
+This command creates a new Pod in the cluster running a MySQL client and connects it to the server through the Service. If it connects, you know your stateful MySQL database is up and running.
+
+Waiting for pod default/mysql-client-274442439-zyp6i to be running, status is Pending, pod ready: false
+If you don't see a command prompt, try pressing enter.
+
+mysql>
+
+Updating
+The image or any other part of the Deployment can be updated as usual with the kubectl apply command. Here are some precautions that are specific to stateful apps:
+
+Don't scale the app. This setup is for single-instance apps only. The underlying PersistentVolume can only be mounted to one Pod. For clustered stateful apps, see the StatefulSet documentation.
+Use strategy: type: Recreate in the Deployment configuration YAML file. This instructs Kubernetes to not use rolling updates. Rolling updates will not work, as you cannot have more than one Pod running at a time. The Recreate strategy will stop the first pod before creating a new one with the updated configuration.
+
+Deleting a deployment
+Delete the deployed objects by name:
+
+kubectl delete deployment,svc mysql && kubectl delete pvc mysql-pv-claim && kubectl delete pv mysql-pv-volume
+
+
+
+mysql-deploy.yaml
+-----------------
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+        - image: mysql:8.0
+          name: mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: password
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - name: mysql-persistent-storage
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: mysql-persistent-storage
+          persistentVolumeClaim:
+            claimName: mysql-pv-claim
+
+-----------------------------------------------------------
